@@ -31,7 +31,7 @@ class RestaurantSearchPage extends StatelessWidget {
                   fillColor: Theme.of(context).colorScheme.surface,
                 ),
                 onChanged: (query) {
-                  context.read<SearchProvider>().fetchSearch(query);
+                  context.read<SearchProvider>().onSearchInput(query);
                 },
               ),
               const SizedBox(height: 10),

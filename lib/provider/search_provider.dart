@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../data/api/api_service.dart';
 import '../utils/result_state.dart';
@@ -10,7 +12,17 @@ class SearchProvider extends ChangeNotifier {
   ResultState _state = InitialState();
   ResultState get state => _state;
 
-  Future<void> fetchSearch(String query) async {
+  Timer? _debounceTimer;
+
+  void onSearchInput(String query) {
+    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      _fetchSearch(query);
+    });
+  }
+
+  Future<void> _fetchSearch(String query) async {
     if (query.isEmpty) {
       _state = InitialState();
       notifyListeners();
@@ -32,5 +44,11 @@ class SearchProvider extends ChangeNotifier {
     } finally {
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    super.dispose();
   }
 }
