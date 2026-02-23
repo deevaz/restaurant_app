@@ -50,7 +50,7 @@ class RestaurantListPage extends StatelessWidget {
         itemCount: restaurants.length,
         itemBuilder: (context, index) => RestaurantCard(
           restaurant: restaurants[index],
-          heroTag: 'home-${restaurants[index].id}',
+          heroTag: restaurants[index].id,
           onTap: () => Navigator.pushNamed(
             context,
             RestaurantDetailPage.routeName,

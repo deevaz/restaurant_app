@@ -1,3 +1,3 @@
 # reastaurant_app
 
-A new Flutter project.
+Submission Dicoding Belajar Fundamental Aplikasi Flutter

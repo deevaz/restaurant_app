@@ -55,7 +55,7 @@ class RestaurantFavPage extends StatelessWidget {
                 final restaurant = favorites[index];
                 return RestaurantCard(
                   restaurant: restaurant,
-                  heroTag: 'fav-${restaurant.id}',
+                  heroTag: restaurant.id,
                   onTap: () {
                     Navigator.pushNamed(
                       context,

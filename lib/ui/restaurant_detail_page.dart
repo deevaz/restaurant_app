@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 import 'package:reastaurant_app/data/api/api_service.dart';
 import 'package:reastaurant_app/data/model/restaurant_detail_response.dart';
 import 'package:reastaurant_app/provider/database_provider.dart';
@@ -63,7 +64,7 @@ Widget _buildDetailContent(
               clipBehavior: Clip.none,
               children: [
                 Hero(
-                  tag: 'home-${data.restaurant.id}',
+                  tag: data.restaurant.id,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
@@ -95,39 +96,37 @@ Widget _buildDetailContent(
                         future: provider.isFavorited(data.restaurant.id),
                         builder: (context, snapshot) {
                           var isBookmarked = snapshot.data ?? false;
-
-                          return Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              customBorder: const CircleBorder(),
-                              onTap: () {
-                                if (isBookmarked) {
-                                  provider.removeFav(data.restaurant.id);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Dihapus dari Favorit'),
-                                      duration: Duration(milliseconds: 500),
-                                    ),
-                                  );
-                                } else {
-                                  final restaurant = model.Restaurant(
-                                    id: data.restaurant.id,
-                                    name: data.restaurant.name,
-                                    description: data.restaurant.description,
-                                    city: data.restaurant.city,
-                                    pictureId: data.restaurant.pictureId,
-                                    rating: data.restaurant.rating,
-                                  );
-
-                                  provider.addFav(restaurant);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Ditambahkan ke Favorit'),
-                                      duration: Duration(milliseconds: 500),
-                                    ),
-                                  );
-                                }
-                              },
+                          return InkWell(
+                            customBorder: const CircleBorder(),
+                            onTap: () {
+                              if (isBookmarked) {
+                                provider.removeFav(data.restaurant.id);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Dihapus dari Favorit'),
+                                    duration: Duration(milliseconds: 500),
+                                  ),
+                                );
+                              } else {
+                                final restaurant = model.Restaurant(
+                                  id: data.restaurant.id,
+                                  name: data.restaurant.name,
+                                  description: data.restaurant.description,
+                                  city: data.restaurant.city,
+                                  pictureId: data.restaurant.pictureId,
+                                  rating: data.restaurant.rating,
+                                );
+                                provider.addFav(restaurant);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Ditambahkan ke Favorit'),
+                                    duration: Duration(milliseconds: 500),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Material(
+                              color: Colors.transparent,
                               child: Container(
                                 height: 40,
                                 width: 40,
@@ -211,9 +210,24 @@ Widget _buildDetailContent(
             ),
             const SizedBox(height: 15),
             Text('Deskripsi', style: Theme.of(context).textTheme.titleSmall),
-            Text(
+            ReadMoreText(
               data.restaurant.description,
+              trimMode: TrimMode.Line,
+              trimLines: 3,
+              colorClickableText: Theme.of(context).colorScheme.primary,
+              trimCollapsedText: 'Baca selengkapnya',
+              trimExpandedText: ' Tampilkan lebih sedikit',
               style: Theme.of(context).textTheme.bodyMedium,
+              moreStyle: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              lessStyle: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
             const SizedBox(height: 15),
             Text('Makanan', style: Theme.of(context).textTheme.titleSmall),
@@ -224,7 +238,7 @@ Widget _buildDetailContent(
                 itemBuilder: (context, index) => MenuCard(
                   title: data.restaurant.menus.foods[index].name,
                   imageUrl:
-                      'https://publicdomainvectors.org/photos/fast-food-menus.png',
+                      'https://cdn.pixabay.com/photo/2014/08/26/09/33/indonesia-427784_640.jpg',
                 ),
                 separatorBuilder: (context, index) => const SizedBox(width: 10),
                 itemCount: data.restaurant.menus.foods.length,
@@ -239,7 +253,7 @@ Widget _buildDetailContent(
                 itemBuilder: (context, index) => MenuCard(
                   title: data.restaurant.menus.drinks[index].name,
                   imageUrl:
-                      'https://publicdomainvectors.org/photos/drink-mega-healthy-veggie-juice.png',
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmzavLZN70HjyO_3xM2WDdJVqW9PZZJ06v8Q&s',
                 ),
                 separatorBuilder: (context, index) => const SizedBox(width: 10),
                 itemCount: data.restaurant.menus.drinks.length,
