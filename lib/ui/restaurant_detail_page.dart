@@ -3,9 +3,12 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:reastaurant_app/data/api/api_service.dart';
 import 'package:reastaurant_app/data/model/restaurant_detail_response.dart';
+import 'package:reastaurant_app/provider/database_provider.dart';
 import 'package:reastaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:reastaurant_app/ui/widgets/menu_card.dart';
 import 'package:reastaurant_app/utils/result_state.dart';
+import 'package:reastaurant_app/data/model/restaurant_list_response.dart'
+    as model;
 
 class RestaurantDetailPage extends StatelessWidget {
   static const routeName = '/restaurant_detail';
@@ -56,29 +59,108 @@ Widget _buildDetailContent(
           spacing: 5,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Hero(
-              tag: 'home-${data.restaurant.id}',
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  '$baseUrlImage${data.restaurant.pictureId}',
-                  width: double.infinity,
-                  height: 200,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Hero(
+                  tag: 'home-${data.restaurant.id}',
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      '$baseUrlImage${data.restaurant.pictureId}',
                       width: double.infinity,
                       height: 200,
-                      color: Colors.grey[300],
-                      child: const Icon(
-                        Icons.broken_image,
-                        size: 50,
-                        color: Colors.grey,
-                      ),
-                    );
-                  },
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: double.infinity,
+                          height: 200,
+                          color: Colors.grey[300],
+                          child: const Icon(
+                            Icons.broken_image,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              ),
+                Positioned(
+                  bottom: -20,
+                  right: 16,
+                  child: Consumer<DatabaseProvider>(
+                    builder: (context, provider, child) {
+                      return FutureBuilder<bool>(
+                        future: provider.isFavorited(data.restaurant.id),
+                        builder: (context, snapshot) {
+                          var isBookmarked = snapshot.data ?? false;
+
+                          return Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              customBorder: const CircleBorder(),
+                              onTap: () {
+                                if (isBookmarked) {
+                                  provider.removeFav(data.restaurant.id);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Dihapus dari Favorit'),
+                                      duration: Duration(milliseconds: 500),
+                                    ),
+                                  );
+                                } else {
+                                  final restaurant = model.Restaurant(
+                                    id: data.restaurant.id,
+                                    name: data.restaurant.name,
+                                    description: data.restaurant.description,
+                                    city: data.restaurant.city,
+                                    pictureId: data.restaurant.pictureId,
+                                    rating: data.restaurant.rating,
+                                  );
+
+                                  provider.addFav(restaurant);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Ditambahkan ke Favorit'),
+                                      duration: Duration(milliseconds: 500),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 4,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceBright,
+                                ),
+                                child: Icon(
+                                  isBookmarked
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: isBookmarked
+                                      ? Colors.red
+                                      : Theme.of(context).colorScheme.secondary,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
             Row(
@@ -142,7 +224,7 @@ Widget _buildDetailContent(
                 itemBuilder: (context, index) => MenuCard(
                   title: data.restaurant.menus.foods[index].name,
                   imageUrl:
-                      'https://publicdomainvectors.org/photos/fast-food-menu.png',
+                      'https://publicdomainvectors.org/photos/fast-food-menus.png',
                 ),
                 separatorBuilder: (context, index) => const SizedBox(width: 10),
                 itemCount: data.restaurant.menus.foods.length,

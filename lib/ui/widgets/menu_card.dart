@@ -22,14 +22,8 @@ class MenuCard extends StatelessWidget {
               width: double.infinity,
               height: 150,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                color: Colors.grey[300],
-                child: const Icon(
-                  Icons.broken_image,
-                  size: 50,
-                  color: Colors.grey,
-                ),
-              ),
+              errorBuilder: (context, error, stackTrace) =>
+                  const Icon(Icons.broken_image, size: 100, color: Colors.grey),
             ),
             Positioned(
               bottom: 0,

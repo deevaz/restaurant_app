@@ -5,9 +5,8 @@ import '../model/restaurant_detail_response.dart';
 import '../model/restaurant_search_response.dart';
 
 class ApiService {
-  static const String _baseUrl = 'https://restaurant-api.dicoding.dev/';
+  static const _baseUrl = 'https://restaurant-api.dicoding.dev/';
 
-  // 1. Mendapatkan Daftar Restoran
   Future<RestaurantListResponse> getList() async {
     final response = await http.get(Uri.parse("${_baseUrl}list"));
     if (response.statusCode == 200) {
@@ -17,7 +16,6 @@ class ApiService {
     }
   }
 
-  // 2. Mendapatkan Detail Restoran
   Future<RestaurantDetailResponse> getDetail(String id) async {
     final response = await http.get(Uri.parse("${_baseUrl}detail/$id"));
     if (response.statusCode == 200) {
@@ -27,7 +25,6 @@ class ApiService {
     }
   }
 
-  // 3. Mencari Restoran
   Future<RestaurantSearchResponse> search(String query) async {
     final response = await http.get(Uri.parse("${_baseUrl}search?q=$query"));
     if (response.statusCode == 200) {
@@ -37,7 +34,6 @@ class ApiService {
     }
   }
 
-  // 4. Menambahkan Review (POST)
   Future<bool> postReview(String id, String name, String review) async {
     final response = await http.post(
       Uri.parse("${_baseUrl}review"),

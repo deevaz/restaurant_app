@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reastaurant_app/provider/bottom_nav_provider.dart';
+import 'package:reastaurant_app/ui/restaurant_fav_page.dart';
 import 'package:reastaurant_app/ui/restaurant_list_page.dart';
 import 'package:reastaurant_app/ui/setting_page.dart';
 
@@ -15,6 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final List<Widget> _listWidget = [
     const RestaurantListPage(),
+    const RestaurantFavPage(),
     const SettingPage(),
   ];
 
@@ -37,6 +39,10 @@ class _HomePageState extends State<HomePage> {
               BottomNavigationBarItem(
                 icon: Icon(Icons.restaurant),
                 label: 'Restoran',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite),
+                label: 'Favorit',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.settings),
