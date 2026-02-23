@@ -27,8 +27,6 @@ class SchedulingProvider extends ChangeNotifier {
     notifyListeners();
 
     if (_isScheduled) {
-      print('Scheduling Activated');
-
       await Workmanager().registerPeriodicTask(
         taskName,
         taskName,
@@ -38,7 +36,6 @@ class SchedulingProvider extends ChangeNotifier {
       );
       return true;
     } else {
-      print('Scheduling Canceled');
       await Workmanager().cancelByUniqueName(taskName);
       return true;
     }

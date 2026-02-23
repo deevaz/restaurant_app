@@ -12,7 +12,6 @@ const String taskName = "daily_reminder";
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     try {
-      print("Background Task Executed: $task");
       final apiService = ApiService();
       final notificationHelper = NotificationHelper();
 
@@ -27,7 +26,6 @@ void callbackDispatcher() {
 
       return Future.value(true);
     } catch (e) {
-      print("Background Task Failed: $e");
       return Future.value(false);
     }
   });

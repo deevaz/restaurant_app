@@ -6,13 +6,13 @@ class RestaurantProvider extends ChangeNotifier {
   final ApiService apiService;
 
   RestaurantProvider({required this.apiService}) {
-    _fetchAllRestaurant();
+    fetchAllRestaurant();
   }
 
   ResultState _state = ResultLoading();
   ResultState get state => _state;
 
-  Future<void> _fetchAllRestaurant() async {
+  Future<void> fetchAllRestaurant() async {
     try {
       _state = ResultLoading();
       notifyListeners();
@@ -24,7 +24,7 @@ class RestaurantProvider extends ChangeNotifier {
         _state = ResultSuccess(result.restaurants);
       }
     } catch (e) {
-      _state = ResultError('Terjadi kesalahan koneksi');
+      _state = ResultError(e.toString());
     } finally {
       notifyListeners();
     }
